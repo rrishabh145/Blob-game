@@ -3,6 +3,7 @@ import random
 from blob_class import Blob
 import numpy as np
 import logging
+import sys
 
 '''
 Levels of debugging:
@@ -40,7 +41,7 @@ class BlueBlob(Blob):
 
     # operator overloading of '+' when two blobs collide
     def __add__(self, other_blob):
-        logging.info('Blob and op {} + {}'.format(str(self.color), str(other_blob.color)))
+        logging.info('Blob and op {} + {}'.format(repr(self), repr(other_blob)))
         if other_blob.color== (255,0,0):
             self.size -= other_blob.size
             other_blob.size -= self.size
@@ -72,7 +73,7 @@ def handle_collision(blob_list):
     for blue_id, blue_blob in blues.copy().items(): #we do copy().items() if we wish to modify the same item
         for other_blobs in blues, reds, greens:
             for other_blob_id, other_blob in other_blobs.copy().items():
-                logging.debug('Checking if blobs are touching {} + {}'.format(str(blue_blob.color),str(other_blob)))
+                logging.debug('Checking if blobs are touching {} + {}'.format(repr(blue_blob),repr(other_blob)))
                 if blue_blob == other_blob:
                     pass
                 else:
@@ -114,7 +115,7 @@ def main():
             blue_blobs, red_blobs, green_blobs = draw_environment([blue_blobs,red_blobs,green_blobs])
             clock.tick(60) #to limit FPS
         except Exception as e:
-            logging.critical(str(e))
+            logging.error('{}. {}, line: {}'.format(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2].tb_lineno) ) # logging.critical(str(e))
             pygame.quit()
             quit()
             break
